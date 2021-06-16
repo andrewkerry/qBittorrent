@@ -46,6 +46,7 @@
 #include <libtorrent/extensions/smart_ban.hpp>
 #include <libtorrent/extensions/ut_metadata.hpp>
 #include <libtorrent/extensions/ut_pex.hpp>
+#include <libtorrent/extensions/tr_payments.hpp>
 #include <libtorrent/ip_filter.hpp>
 #include <libtorrent/magnet_uri.hpp>
 #include <libtorrent/session.hpp>
@@ -69,6 +70,7 @@
 #include <QUuid>
 
 #include "base/algorithm.h"
+#include "base/preferences.h"
 #include "base/exceptions.h"
 #include "base/global.h"
 #include "base/logger.h"
@@ -1112,6 +1114,12 @@ void Session::initializeNativeSession()
     if (isPeXEnabled())
         m_nativeSession->add_extension(&lt::create_ut_pex_plugin);
 
+    const Preferences *pref = Preferences::instance();
+    const QString& node = pref->lightningNode();
+    if(node.size() > 0) {
+	std::vector<std::string> params = pref->lightningParams();
+        m_nativeSession->add_extension(lt::create_tr_payments_plugin({node.toStdString(), params}));
+    }
     m_nativeSession->add_extension(std::make_shared<NativeSessionExtension>());
 }
 
@@ -2217,6 +2225,12 @@ bool Session::loadTorrent(LoadTorrentParams params)
     const auto id = TorrentID::fromInfoHash(hasMetadata ? p.ti->info_hash() : p.info_hash);
 #endif
     m_loadingTorrents.insert(id, params);
+
+    auto po = new lt::payment_options();
+    const Preferences *pref = Preferences::instance();
+    po->m_req_total_price_msat = pref->lightningRequestingPricePerTorrentMsat();
+    po->m_can_pay_total_price_msat = pref->lightningWillingToPayPricePerTorrentMsat();
+    p.userdata = po;
 
     // Adding torrent to BitTorrent session
     m_nativeSession->async_add_torrent(p);

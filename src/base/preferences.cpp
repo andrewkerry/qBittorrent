@@ -276,6 +276,44 @@ void Preferences::setStartMinimized(const bool b)
     setValue("Preferences/General/StartMinimized", b);
 }
 
+QString Preferences::lightningNode() const
+{
+    return Utils::Fs::toUniformPath(value("Preferences/Lightning/Node", "").toString());
+}
+
+void Preferences::setLightningNode(const QString &node)
+{
+    setValue("Preferences/Lightning/Node", node);
+}
+
+std::vector<std::string> Preferences::lightningParams() const
+{
+    std::vector<std::string> ret;
+    if(value("Preferences/Lightning/Param1", "").toString().size() > 0) ret.push_back(value("Preferences/Lightning/Param1").toString().toStdString());
+    if(value("Preferences/Lightning/Param2", "").toString().size() > 0) ret.push_back(value("Preferences/Lightning/Param2").toString().toStdString());
+    if(value("Preferences/Lightning/Param3", "").toString().size() > 0) ret.push_back(value("Preferences/Lightning/Param3").toString().toStdString());
+    if(value("Preferences/Lightning/Param4", "").toString().size() > 0) ret.push_back(value("Preferences/Lightning/Param4").toString().toStdString());
+    return ret;
+}
+
+int Preferences::lightningRequestingPricePerTorrentMsat() const
+{
+    return value("Preferences/Lightning/RequestingPricePerTorrentMsat", 0).toInt();
+}
+
+int Preferences::lightningWillingToPayPricePerTorrentMsat() const
+{
+    return value("Preferences/Lightning/WillingToPayPricePerTorrentMsat", 0).toInt();
+}
+
+void Preferences::setLightningParams(const std::vector<std::string> &params)
+{
+    setValue("Preferences/Lightning/Param1", params.size() > 0 ? QString::fromUtf8(params[0].c_str()) : "");
+    setValue("Preferences/Lightning/Param2", params.size() > 1 ? QString::fromUtf8(params[1].c_str()) : "");
+    setValue("Preferences/Lightning/Param3", params.size() > 2 ? QString::fromUtf8(params[2].c_str()) : "");
+    setValue("Preferences/Lightning/Param4", params.size() > 3 ? QString::fromUtf8(params[3].c_str()) : "");
+}
+
 bool Preferences::isSplashScreenDisabled() const
 {
     return value("Preferences/General/NoSplashScreen", true).toBool();

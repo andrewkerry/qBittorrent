@@ -118,6 +118,12 @@ public:
     void setToolbarDisplayed(bool displayed);
     bool startMinimized() const;
     void setStartMinimized(bool b);
+    QString lightningNode() const;
+    void setLightningNode(const QString &node);
+    std::vector<std::string> lightningParams() const;
+    int lightningRequestingPricePerTorrentMsat() const;
+    int lightningWillingToPayPricePerTorrentMsat() const;
+    void setLightningParams(const std::vector<std::string> &params);
     bool isSplashScreenDisabled() const;
     void setSplashScreenDisabled(bool b);
     bool preventFromSuspendWhenDownloading() const;

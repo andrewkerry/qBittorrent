@@ -32,6 +32,7 @@
 #include <algorithm>
 #include <memory>
 #include <type_traits>
+#include <iostream>
 
 #ifdef Q_OS_WIN
 #include <Windows.h>
@@ -44,6 +45,7 @@
 #include <libtorrent/storage_defs.hpp>
 #include <libtorrent/time.hpp>
 #include <libtorrent/version.hpp>
+#include <libtorrent/extensions/tr_payments.hpp>
 
 #if (LIBTORRENT_VERSION_NUM >= 20000)
 #include <libtorrent/info_hash.hpp>
